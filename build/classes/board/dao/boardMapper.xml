@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="boardSQL">
+	<!-- 글쓰기 -->
+	<insert id="boardWrite" parameterType="java.util.Map">
+		insert into board(seq, id, name, email, subject, content, ref) 
+       	values(seq_board.nextval
+       		, #{id}
+       		, #{name}
+       		, #{email}
+       		, #{subject}
+       		, #{content}
+       		, seq_board.nextval)
+	</insert>
+	
+	<!-- 목록 -->
+	<select id="getBoardList" parameterType="java.util.Map" resultType="board">
+		<!-- select * from 
+		(select rownum rn, tt.* from 
+		(select * from board order by ref desc, step asc) tt
+		)where rn &gt;= #{startNum} and rn  &lt;= #{endNum} -->
+		
+		<!-- select * from 
+		(select rownum rn, tt.* from 
+		(select * from board order by ref desc, step asc) tt
+		)where rn between #{startNum} and #{endNum} -->
+		
+		<![CDATA[
+		select * from 
+		(select rownum rn, tt.* from 
+		(select * from board order by ref desc, step asc) tt
+		)where rn >= #{startNum} and rn <= #{endNum}
+		]]>
+	</select>
+	
+	<!-- 글보기 -->
+	<select id="getBoardView" parameterType="int" resultType="board">
+		select * from board where seq=#{seq}
+	</select>
+	
+	<!-- 글수정 -->
+	<update id="boardModify" parameterType="java.util.Map">
+		update board set subject=#{subject}
+					   , content=#{content}
+					   , logtime=sysdate where seq=#{seq}
+	</update>
+	
+	<!-- 총글수 -->
+	<select id="getTotalA" resultType="int">
+		select count(*) from board
+	</select>
+	
+	<!-- 답글 -->
+	<update id="boardReply1" parameterType="board">
+		update board set step=step+1 where ref=#{ref} and step > #{step}
+	</update>
+	
+	<insert id="boardReply2" parameterType="java.util.Map">
+		insert into board(seq, id, name, email, subject, content, ref, lev, step, pseq, reply, hit, logtime) 
+       	values(seq_board.nextval
+       		, #{id}
+       		, #{name}
+       		, #{email}
+       		, #{subject}
+       		, #{content}
+       		, #{ref}
+       		, #{lev}
+       		, #{step}
+       		, #{pseq}
+       		, 0
+       		, 0
+       		, sysdate)
+	</insert>
+	
+	<update id="boardReply3">
+		update board set reply=reply+1 where seq=#{pseq}
+	</update>
+	
+	<!-- 삭제 -->
+	<update id="boardDelete1">
+		update board set reply=reply-1 where seq=#{pseq}
+	</update>
+	
+	<update id="boardDelete2">
+		update board set subject='[원글이 삭제된 답글]' || subject where pseq=#{seq}
+	</update>
+	
+	<delete id="boardDelete3">
+		delete board where seq=#{seq}
+	</delete>
+</mapper> 
+
+
+
+
+
+
+
+
+
+
