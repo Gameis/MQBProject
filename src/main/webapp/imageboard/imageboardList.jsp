@@ -37,7 +37,7 @@ td {
 <input type="hidden" id="pg" value="${ requestScope.pg }">
 <table id="imageboardListTable" border="1" cellspacing="0" cellpadding="5" frame="hsides" rules="rows">
 	<tr>
-		<th width="100">글번호</th>
+		<th width="100"><input type="checkBox" id="all"/>글번호</th>
 		<th width="300">이미지</th>
 		<th width="100">상품명</th>
 		<th width="100">단가</th>
@@ -45,7 +45,9 @@ td {
 		<th width="100">합계</th>
 	</tr>
 </table>
-<div style="width: 750px; text-align: center;" id="boardPagingDiv">???</div>
+<input type="button" id="choiceDeleteBtn" value="선택삭제"/>
+<div style="width: 750px; text-align: center;" id="imageboardPagingDiv">???</div>
+
 <script type="text/javascript" src="http://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script type="text/javascript">
 	$(function() {
@@ -59,12 +61,13 @@ td {
 				$.each(data.list, function(index, items){
 					$('<tr/>').append($('<td/>', {
 						align: 'center',
-						text: items.seq
 					})).append($('<td/>', {
 						align: 'center'
 					}).append($('<img/>', {
 						src: '../storage/' + items.image1,
-						alt: items.image1
+						alt: items.image1,
+						width: '40',
+						height: '40'
 					}))).append($('<td/>', {
 						align: 'center',
 						text: items.imageName
@@ -78,13 +81,59 @@ td {
 						align: 'center',
 						text: items.imagePrice * items.imageQty
 					})).appendTo('#imageboardListTable');
+					
+					$('#imageboardListTable tr:eq('+(index+1)+') > td:eq(0)').append($('<span/>', {
+						text: items.seq,
+					}));
+					
+					$('#imageboardListTable tr:eq('+(index+1)+') > td:eq(0) > span').before($('<input>', {
+						type: 'checkBox',
+						class: 'check'
+					}));
+					
 				});
+				
+				//페이징 처리
+				$('#imageboardPagingDiv').html(data.imageboardPaging);
+				
+				
 			},
 			error: function(error) {
 				alert("실패");
 				console.log(error);
 			}
 		});
+		
+		$(document).on('change', '#all', function(){
+			if($('#all').is(':checked')) {
+				$('.check').prop('checked', true);
+			}else {
+				$('.check').prop('checked', '');
+			}
+		});
+		
+		$('#choiceDeleteBtn').click(function() {
+			var seq ='';
+			
+			for(var i = 0; i < $('.check').length; i++) {
+				$.ajax({
+					url: '/MQBProject/imageboard/imageboardDelete.do',
+					type: 'post',
+					data: 'seq=' + $('.check:eq('+i+')').next().text(),
+					success : function() {
+						alert("성공");
+					},
+					error: function() {
+						alert("실패");
+					}
+				});
+			}
+		});
 	});
+</script>
+<script type="text/javascript">
+	function boardPaging(param_pg) {
+		location.href = '/MQBProject/board/boardList.do?pg='+param_pg;
+	}
 </script>
 </html>

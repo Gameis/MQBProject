@@ -58,4 +58,12 @@ public class ImageboardDAO {
 		return totalA;
 	}
 
+	public void deleteImageboard(String seq) {
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		sqlSession.delete("imageboardSQL.deleteImageboard",Integer.parseInt(seq));
+		sqlSession.commit();
+		sqlSession.close();
+		
+	}
+
 }

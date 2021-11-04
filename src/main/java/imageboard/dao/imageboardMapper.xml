@@ -28,4 +28,9 @@
 		)where rn >= #{startNum} and rn <= #{endNum}
 		]]>
 	</select>
+	
+	<!-- 삭제 -->
+	<delete id="deleteImageboard" parameterType="int">
+		delete from imageboard where seq = #{seq}
+	</delete>
  </mapper>

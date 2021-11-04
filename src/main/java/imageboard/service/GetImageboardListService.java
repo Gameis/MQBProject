@@ -15,6 +15,7 @@ import board.bean.BoardDTO;
 import board.bean.BoardPaging;
 import board.dao.BoardDAO;
 import imageboard.bean.ImageboardDTO;
+import imageboard.bean.ImageboardPaging;
 import imageboard.dao.ImageboardDAO;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -28,9 +29,9 @@ public class GetImageboardListService implements CommandProcess {
 		//데이터
 		int pg = Integer.parseInt(request.getParameter("pg"));
 		
-		//DB - 1페이지당 5개씩
-		int endNum = pg * 5;
-		int startNum = endNum - 4;
+		//DB - 1페이지당 3개씩
+		int endNum = pg * 3;
+		int startNum = endNum - 2;
 		
 		Map<String, Integer> map = new HashMap<String, Integer>();
 		map.put("startNum", startNum);
@@ -46,12 +47,12 @@ public class GetImageboardListService implements CommandProcess {
 		//페이징 처리
 		int totalA = imageboardDAO.getTotalA();
 		
-		BoardPaging boardPaging = new BoardPaging();
-		boardPaging.setCurrentPage(pg);
-		boardPaging.setPageBlock(3);
-		boardPaging.setPageSize(5);
-		boardPaging.setTotalA(totalA);
-		boardPaging.makePagingHTML();
+		ImageboardPaging imageboardPaging = new ImageboardPaging();
+		imageboardPaging.setCurrentPage(pg);
+		imageboardPaging.setPageBlock(3);
+		imageboardPaging.setPageSize(3);
+		imageboardPaging.setTotalA(totalA);
+		imageboardPaging.makePagingHTML();
 		
 		// List -> JSON 변환
 		JSONObject json = new JSONObject();
@@ -79,7 +80,8 @@ public class GetImageboardListService implements CommandProcess {
 		}//if
 		
 		System.out.println(json);
-		
+		System.out.println(imageboardPaging.getPagingHTML().toString());
+		json.put("imageboardPaging", imageboardPaging.getPagingHTML().toString());
 		request.setAttribute("list", json);
 		return "/imageboard/getImageboardList.jsp";
 	}
