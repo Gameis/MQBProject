@@ -116,17 +116,19 @@ td {
 			var seq ='';
 			
 			for(var i = 0; i < $('.check').length; i++) {
-				$.ajax({
-					url: '/MQBProject/imageboard/imageboardDelete.do',
-					type: 'post',
-					data: 'seq=' + $('.check:eq('+i+')').next().text(),
-					success : function() {
-						alert("성공");
-					},
-					error: function() {
-						alert("실패");
-					}
-				});
+				if($('.check:eq('+ i +')').is(':checked')) {
+					$.ajax({
+						url: '/MQBProject/imageboard/imageboardDelete.do',
+						type: 'post',
+						data: 'seq=' + $('.check:eq('+i+')').next().text(),
+						success : function() {
+							alert("성공");
+						},
+						error: function() {
+							alert("실패");
+						}
+					});
+				}
 			}
 		});
 	});

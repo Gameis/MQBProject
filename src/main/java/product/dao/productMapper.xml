@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="productSQL">
+	<insert id="productWrite" parameterType="product.bean.ProductDTO">
+	 	insert into product values(seq_product.nextval
+	 								, #{img}
+	 								, #{name}
+	 								, #{unit}
+	 								, #{qty}
+	 								, #{total}
+	 								, #{rate}
+	 								, #{discount}
+	 								, #{price}) 	
+	</insert>
+	
+	<!-- 목록 -->
+	<select id="getProductList" resultType="product">
+		select * from product
+	</select>
+ </mapper>
