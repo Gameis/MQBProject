@@ -6,7 +6,7 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 </head>
-<body>
+<body>sdf
 	<form id="productWriteForm" method="post" enctype="multipart/form-data" action="/MQBProject/product/productWrite.do">
 		<table border="1" cellpadding="5" cellspacing="0">
 			<tr>
